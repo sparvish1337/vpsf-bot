@@ -10,10 +10,10 @@ module.exports = {
             option.setName('club').setDescription('Choose a club').setRequired(true)
         )
         .addIntegerOption(option =>
-            option.setName('seasons').setDescription('Number of seasons (1-5)').setMinValue(1).setMaxValue(5).setRequired(true)
+            option.setName('seasons').setDescription('Seasons (1-5)').setMinValue(1).setMaxValue(5).setRequired(true)
         ),
 
-    async execute(interaction) {
+    async run(interaction) {
         const club = interaction.options.getRole('club')
         const seasons = interaction.options.getInteger('seasons')
         const im = interaction.member
@@ -37,15 +37,15 @@ module.exports = {
         const ClubPlayer = interaction.guild.roles.cache.get(ClubPlayerId)
 
         if (!clubs.includes(club.id)) {
-            return interaction.reply({ content: 'The role you choose is not a club', flags: 64 })
+            return interaction.reply({ content: 'The selected role is not a club', flags: 64 })
         }
 
         if (im.roles.cache.has(ClubPlayerId)) {
-            return interaction.reply({ content: 'You are already in a club. You cannot confirm with another.', flags: 64 })
+            return interaction.reply({ content: 'You are already in a club.', flags: 64 })
         }
 
         const Offer = await ConfirmChannel.send({
-            content: `${im} request to join ${club} for ${seasons} seasons.`
+            content: `${im} has requested to join ${club} for ${seasons} season(s).`
         });
 
         await Offer.react('✅')
@@ -53,16 +53,16 @@ module.exports = {
         const Buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                     .setCustomId(`approved_${Offer.id}`)
-                    .setLabel('Approved')
+                    .setLabel('Approve')
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId(`deny_${Offer.id}`)
                     .setLabel('Deny')
-                    .setStyle(ButtonStyle.Success)
+                    .setStyle(ButtonStyle.Danger)
         );
 
         const ButtonMessage = await ConfirmPlayer.send({
-            content: `${im} wants to join ${club} for ${seasons} seasons.`,
+            content: `${im} has requested to join ${club} for ${seasons} seasons.`,
             components: [Buttons]
                 
         });
@@ -79,15 +79,15 @@ module.exports = {
                 await user.roles.add(ClubPlayer)
 
                 await Offer.edit({
-                    content: `${im} request to join ${club} for ${seasons} seasons.\n*(Approved by ${iu})*`
+                    content: `${im} has requested to join ${club} for ${seasons} seasons.\n*(Approved by ${iu})*`
                 });
 
                 await ButtonMessage.edit({
-                    content: `${im} wants to join ${club} for ${seasons} seasons.`
+                    content: `${im} requested to join ${club} for ${seasons} seasons.`
                 });
 
                 await LogChannel.send({
-                    content: `# :bust_in_silhouette: Free agent :arrow_right: ${club}\n> ${im}\n> for ${seasons} seasons.\n*(from ${iu})*`
+                    content: `## :bust_in_silhouette: Free agent :arrow_right: ${club}\n> ${im}\n> for ${seasons} seasons.\n*(from ${iu})*`
                 })
 
             }
@@ -95,11 +95,11 @@ module.exports = {
             if (i.customId.startsWith(`deny_${Offer.id}`)) {
 
                 await Offer.edit({
-                    content: `${im} request to join ${club} for ${seasons} seasons.\n*(Denyed by ${iu})*`
+                    content: `${im} has requested to join ${club} for ${seasons} seasons.\n*(Denied by ${iu})*`
                 });
 
                 await ButtonMessage.edit({
-                    content: `${im} wants to join ${club} for ${seasons} seasons.`
+                    content: `${im} has requested to join ${club} for ${seasons} seasons.`
                 });
 
             }

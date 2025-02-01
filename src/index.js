@@ -18,4 +18,4 @@ new CommandKit({
     commandsPath: `${__dirname}/commands`
 });
 
-client.login(process.env.TOKEN);
+client.login('MTMzNDQ2ODIyNDg5NjcyOTExMQ.GMjDI8.3VYi-ePlDRnu3MT_B40C2ijKK8nkWf6NpkzOyM');

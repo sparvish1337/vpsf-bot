@@ -10,7 +10,7 @@ module.exports = {
         .setRequired(true)
     ),
 
-async execute(interaction) {
+async run(interaction) {
     const newNickname = interaction.options.nickname.getString('nickname');
     const currentNickname = interaction.member.displayName;
 
