@@ -41,12 +41,52 @@ CREATE TABLE IF NOT EXISTS `matches` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table test.pending_confirmations
+CREATE TABLE IF NOT EXISTS `pending_confirmations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `requestuserid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `clubid` varchar(255) NOT NULL,
+  `seasons` varchar(255) NOT NULL,
+  `messageid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table test.pending_loans
+CREATE TABLE IF NOT EXISTS `pending_loans` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `requesterid` varchar(255) NOT NULL,
+  `playerid` varchar(255) NOT NULL,
+  `fromclubid` varchar(255) NOT NULL,
+  `toclubid` varchar(255) NOT NULL,
+  `seasons` varchar(255) NOT NULL,
+  `messageid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table test.pending_transfers
+CREATE TABLE IF NOT EXISTS `pending_transfers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `requesterid` varchar(255) NOT NULL,
+  `fromclubid` varchar(255) NOT NULL,
+  `toclubid` varchar(255) NOT NULL,
+  `seasons` varchar(255) NOT NULL,
+  `offered` varchar(255) NOT NULL,
+  `messageid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table test.players
 CREATE TABLE IF NOT EXISTS `players` (
   `id` int NOT NULL AUTO_INCREMENT,
   `userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `discord_userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `steamid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `steamurl` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nationality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `team` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `position` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -71,6 +111,20 @@ CREATE TABLE IF NOT EXISTS `teams` (
   `leagueid` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table test.transfers_log
+CREATE TABLE IF NOT EXISTS `transfers_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `userid` varchar(255) NOT NULL,
+  `fromteam` varchar(255) NOT NULL,
+  `toteam` varchar(255) NOT NULL,
+  `timestamp` varchar(255) NOT NULL,
+  `isloan` varchar(255) NOT NULL,
+  `messageid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Data exporting was unselected.
 
