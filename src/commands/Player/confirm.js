@@ -1,109 +1,109 @@
-const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js')
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('confirm')
         .setDescription('Request to join a club')
         .setDMPermission(false)
-
         .addRoleOption(option =>
-            option.setName('club').setDescription('Choose a club').setRequired(true)
+            option.setName('club')
+                .setDescription('Choose a club')
+                .setRequired(true)
         )
         .addIntegerOption(option =>
-            option.setName('seasons').setDescription('Seasons (1-5)').setMinValue(1).setMaxValue(5).setRequired(true)
+            option.setName('seasons')
+                .setDescription('Seasons (1-5)')
+                .setMinValue(1)
+                .setMaxValue(5)
+                .setRequired(true)
         ),
 
     async run(interaction) {
-        const club = interaction.options.getRole('club')
-        const seasons = interaction.options.getInteger('seasons')
-        const im = interaction.member
-        const user = interaction.guild.members.cache.get(im.id)
+        if (!interaction.isChatInputCommand()) return;
 
-        const clubs = ['1334471612015050792', '1334484868456775721']
+        const club = interaction.options.getRole('club'); 
+        const seasons = interaction.options.getInteger('seasons');
+        const member = interaction.member;
+        const user = interaction.guild.members.cache.get(member.id);
 
-        const ConfirmChannelId = '1334459839715217408'
-        const ConfirmChannel = interaction.guild.channels.cache.get(ConfirmChannelId)
+        const allowedClubs = ['1334471612015050792', '1334484868456775721'];
 
-        const ConfirmPlayerId = '1334459822518833152'
-        const ConfirmPlayer = interaction.guild.channels.cache.get(ConfirmPlayerId)
+        const confirmChannelId = '1334459839715217408';
+        const confirmPlayerId = '1334459822518833152';
+        const logChannelId = '1334459801161437204';
 
-        const LogChannelId = '1334459801161437204'
-        const LogChannel = interaction.guild.channels.cache.get(LogChannelId)
+        const freeAgentId = '1334484749607108661';
+        const clubPlayerId = '1334484767252414504';
 
-        const FreeAgentId = '1334484749607108661'
-        const FreeAgent = interaction.guild.roles.cache.get(FreeAgentId)
+        const confirmChannel = interaction.guild.channels.cache.get(confirmChannelId);
+        const confirmPlayer = interaction.guild.channels.cache.get(confirmPlayerId);
+        const logChannel = interaction.guild.channels.cache.get(logChannelId);
 
-        const ClubPlayerId = '1334484767252414504'
-        const ClubPlayer = interaction.guild.roles.cache.get(ClubPlayerId)
+        const freeAgent = interaction.guild.roles.cache.get(freeAgentId);
+        const clubPlayer = interaction.guild.roles.cache.get(clubPlayerId);
 
-        if (!clubs.includes(club.id)) {
-            return interaction.reply({ content: 'The selected role is not a club', flags: 64 })
+        if (!allowedClubs.includes(club.id)) {
+            return interaction.reply({ content: 'The selected role is not a valid club.', ephemeral: true });
         }
 
-        if (im.roles.cache.has(ClubPlayerId)) {
-            return interaction.reply({ content: 'You are already in a club.', flags: 64 })
+        if (member.roles.cache.has(clubPlayerId)) {
+            return interaction.reply({ content: 'You are already in a club.', ephemeral: true });
         }
 
-        const Offer = await ConfirmChannel.send({
-            content: `${im} has requested to join ${club} for ${seasons} season(s).`
+        const offer = await confirmChannel.send({
+            content: `${member} has requested to join ${club} for ${seasons} season(s).`
         });
 
-        await Offer.react('✅')
+        await offer.react('✅');
 
-        const Buttons = new ActionRowBuilder().addComponents(
+        const buttons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                    .setCustomId(`approved_${Offer.id}`)
-                    .setLabel('Approve')
-                    .setStyle(ButtonStyle.Success),
-                new ButtonBuilder()
-                    .setCustomId(`deny_${Offer.id}`)
-                    .setLabel('Deny')
-                    .setStyle(ButtonStyle.Danger)
+                .setCustomId(`approve_${offer.id}`)
+                .setLabel('Approve')
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setCustomId(`deny_${offer.id}`)
+                .setLabel('Deny')
+                .setStyle(ButtonStyle.Danger)
         );
 
-        const ButtonMessage = await ConfirmPlayer.send({
-            content: `${im} has requested to join ${club} for ${seasons} seasons.`,
-            components: [Buttons]
-                
+        const buttonMessage = await confirmPlayer.send({
+            content: `${member} has requested to join ${club} for ${seasons} seasons.`,
+            components: [buttons]
         });
 
-        const filter = i => i.customId.startsWith(`approved_${Offer.id}`) || i.customId.startsWith(`deny_${Offer.id}`)
-        const collector = ConfirmPlayer.createMessageComponentCollector({ filter })
+        const filter = i => i.customId.startsWith(`approve_${offer.id}`) || i.customId.startsWith(`deny_${offer.id}`);
+        const collector = confirmPlayer.createMessageComponentCollector({ filter });
 
         collector.on('collect', async i => {
-            const iu = interaction.user
+            const approvingUser = i.user;
 
-            if (i.customId.startsWith(`approved_${Offer.id}`)) {
-                await user.roles.remove(FreeAgent)
-                await user.roles.add(club)
-                await user.roles.add(ClubPlayer)
+            if (i.customId.startsWith(`approve_${offer.id}`)) {
+                await user.roles.remove(freeAgent);
+                await user.roles.add(club);
+                await user.roles.add(clubPlayer);
 
-                await Offer.edit({
-                    content: `${im} has requested to join ${club} for ${seasons} seasons.\n*(Approved by ${iu})*`
+                await offer.edit({
+                    content: `${member} has requested to join ${club} for ${seasons} seasons.\n*(Approved by ${approvingUser})*`
                 });
 
-                await ButtonMessage.edit({
-                    content: `${im} requested to join ${club} for ${seasons} seasons.`
+                await buttonMessage.edit({
+                    content: `${member} requested to join ${club} for ${seasons} seasons.`
                 });
 
-                await LogChannel.send({
-                    content: `## :bust_in_silhouette: Free agent :arrow_right: ${club}\n> ${im}\n> for ${seasons} seasons.\n*(from ${iu})*`
-                })
+                await logChannel.send({
+                    content: `## :bust_in_silhouette: Free agent → ${club}\n> ${member}\n> for ${seasons} seasons.\n*(Approved by ${approvingUser})*`
+                });
 
+            } else if (i.customId.startsWith(`deny_${offer.id}`)) {
+                await offer.edit({
+                    content: `${member} has requested to join ${club} for ${seasons} seasons.\n*(Denied by ${approvingUser})*`
+                });
+
+                await buttonMessage.edit({
+                    content: `${member} has requested to join ${club} for ${seasons} seasons.`
+                });
             }
-
-            if (i.customId.startsWith(`deny_${Offer.id}`)) {
-
-                await Offer.edit({
-                    content: `${im} has requested to join ${club} for ${seasons} seasons.\n*(Denied by ${iu})*`
-                });
-
-                await ButtonMessage.edit({
-                    content: `${im} has requested to join ${club} for ${seasons} seasons.`
-                });
-
-            }
-
         });
     }
-}
+};
