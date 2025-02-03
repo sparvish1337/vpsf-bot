@@ -4,11 +4,11 @@ const path = require('path');
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, PermissionsBitField } = require('discord.js');
 
 
-const APPROVAL_CHANNEL_ID = '1335708929560150078'; // Replace with the actual approval channel ID
-const CONFIRMATION_CHANNEL_ID = '1334160136796770307'; // Replace with the actual confirmation channel ID
-const FREE_AGENT_ROLE_ID = '1335707059638767736'; // Replace with the actual Free Agent role ID
-const TRANSFER_LOG_CHANNEL_ID = '1334160298323611730'; // Replace with the actual transfer log channel ID
-const ALLOWED_TEAM_ROLE_IDS = ['1335707053607616646', '1335707058921803937']; // Replace with actual team role IDs
+const APPROVAL_CHANNEL_ID = '1335691250237571132'; // Replace with the actual approval channel ID
+const CONFIRMATION_CHANNEL_ID = '1334459839715217408'; // Replace with the actual confirmation channel ID
+const FREE_AGENT_ROLE_ID = '1334484749607108661'; // Replace with the actual Free Agent role ID
+const TRANSFER_LOG_CHANNEL_ID = '1334459801161437204'; // Replace with the actual transfer log channel ID
+const ALLOWED_TEAM_ROLE_IDS = ['1334484868456775721', '1334471612015050792']; // Replace with actual team role IDs
 
 
 client.once('ready', async () => {
